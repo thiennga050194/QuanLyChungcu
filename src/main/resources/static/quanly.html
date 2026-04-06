@@ -1,0 +1,2544 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Quản Lý Chung Cư</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --secondary: #0ea5e9;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --sidebar-bg: #0f172a;
+      --main-bg: #f8fafc;
+      --sidebar-width: 250px;
+    }
+
+    body {
+      color: #334155;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+
+      background-image: url("video/background.jpg");
+      /* đường dẫn ảnh */
+      background-size: cover;
+      /* ảnh phủ toàn màn hình */
+      background-position: center;
+      /* căn giữa ảnh */
+      background-repeat: no-repeat;
+      /* không lặp ảnh */
+    }
+
+    .wrapper {
+      display: flex;
+      height: 100%;
+      width: 100%;
+    }
+
+    .sidebar {
+      width: var(--sidebar-width);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+
+      background-image: url("video/thuong.jpg");
+      background-size: cover;
+      background-position: right;
+      background-repeat: no-repeat;
+    }
+
+    .sidebar-header {
+      padding: 1.5rem;
+      text-align: center;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 1rem 0;
+      overflow-y: auto;
+    }
+
+    .nav-item {
+      padding: 0.75rem 1.5rem;
+      margin: 0.2rem 0.75rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.2s;
+      color: #cbd5e1;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .nav-item:hover {
+      background: #1e293b;
+      color: #fff;
+    }
+
+    .nav-item.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    }
+
+    .content-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    header {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(8px);
+      padding: 0.75rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e2e8f0;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .page {
+      display: none;
+      padding: 2rem;
+      animation: slideUp 0.3s ease-out;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 1rem;
+      border: 1px solid #e2e8f0;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      margin-bottom: 1.5rem;
+    }
+
+    .table-scroll {
+      max-height: 300px;
+      overflow-y: auto;
+      border-bottom: 1px solid #e2e8f0;
+      scrollbar-width: thin;
+    }
+
+    .table-scroll thead th {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #f8fafc !important;
+      box-shadow: inset 0 -1px 0 #e2e8f0;
+    }
+
+    .table-responsive {
+      border-radius: 0.75rem;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+    }
+
+    .table {
+      margin-bottom: 0;
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .table th {
+      background: #f8fafc;
+      color: #64748b;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 1rem;
+      text-align: left;
+    }
+
+    .table td {
+      padding: 1rem;
+      border-top: 1px solid #f1f5f9;
+      vertical-align: middle;
+      color: #334155;
+    }
+
+    .table-striped tbody tr:nth-of-type(odd) {
+      background-color: #fcfdfe;
+    }
+
+    .table-hover tbody tr:hover {
+      background-color: #f1f5f9;
+    }
+
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      border: none;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .btn-warning {
+      background: var(--warning);
+      color: #fff;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    .btn-outline-light {
+      background: transparent;
+      border: 1px solid #e2e8f0;
+      color: #1e293b;
+    }
+
+    .btn-outline-light:hover {
+      background: #f8fafc;
+    }
+
+    input.form-control {
+      border-radius: 0.5rem;
+      border: 1px solid #e2e8f0;
+      padding: 0.6rem 0.75rem;
+      transition: border-color 0.2s;
+    }
+
+    input.form-control:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+    }
+
+    .pagination-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 1rem;
+    }
+
+    .pagination-buttons {
+      display: flex;
+      gap: 5px;
+    }
+
+    #userInfo {
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    h3 {
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Dashboard Styles */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .dashboard-card {
+      background: #fff;
+      border-radius: 1rem;
+      border: 1px solid #e2e8f0;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      border-color: var(--primary);
+    }
+
+    .dashboard-card .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      background: #f1f5f9;
+      transition: all 0.3s;
+    }
+
+    .dashboard-card:hover .card-icon {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .dashboard-card .card-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #1e293b;
+    }
+
+    .dashboard-card .card-desc {
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+  </style>
+</head>
+
+<body class="bg-light">
+
+  <div class="wrapper">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2 class="h5 mb-0 fw-bold">🏙️ CHUNG CƯ LUX</h2>
+        <p class="small text-muted mb-0 mt-1">Hệ thống quản lý</p>
+      </div>
+      <nav class="sidebar-nav">
+        <div id="side-dashboard" class="nav-item active" onclick="showPage('dashboard')">
+          <span>📊</span> Trang Chủ
+        </div>
+        <div class="px-3 py-2 small text-uppercase text-muted fw-bold"
+          style="font-size: 0.7rem; letter-spacing: 0.05em;">Cơ bản</div>
+        <div id="side-khu-can-ho" class="nav-item" onclick="showPage('khu-can-ho')">
+          <span>🏢</span> Khu Căn Hộ
+        </div>
+        <div id="side-can-ho" class="nav-item" onclick="showPage('can-ho')">
+          <span>🏠</span> Căn Hộ
+        </div>
+        <div id="side-cu-dan" class="nav-item" onclick="showPage('cu-dan')">
+          <span>👥</span> Cư Dân
+        </div>
+        <div id="side-phuong-tien" class="nav-item" onclick="showPage('phuong-tien')">
+          <span>🚗</span> Phương Tiện
+        </div>
+        <div id="side-mua-ban" class="nav-item" onclick="showPage('mua-ban')">
+          <span>🤝</span> Mua Bán
+        </div>
+
+        <div class="px-3 py-2 mt-2 small text-uppercase text-muted fw-bold"
+          style="font-size: 0.7rem; letter-spacing: 0.05em;">Chi phí & Tiền phí</div>
+        <div id="side-dien" class="nav-item" onclick="showPage('dien')">
+          <span>⚡</span> Tiền Điện
+        </div>
+        <div id="side-nuoc" class="nav-item" onclick="showPage('nuoc')">
+          <span>💧</span> Tiền Nước
+        </div>
+        <div id="side-Tien-Ve-Sinh-Chung" class="nav-item" onclick="showPage('Tien-Ve-Sinh-Chung')">
+          <span>🧹</span> Sân / Vệ Sinh
+        </div>
+        <div id="side-Tien-Gui-Xe" class="nav-item" onclick="showPage('Tien-Gui-Xe')">
+          <span>🅿️</span> Tiền Gửi Xe
+        </div>
+        <div id="side-Chi-Phi-Duy-Tri" class="nav-item" onclick="showPage('Chi-Phi-Duy-Tri')">
+          <span>�️</span> Phí Duy Trì
+        </div>
+        <div id="side-Hoat-Dong" class="nav-item" onclick="showPage('Hoat-Dong')">
+          <span>🎭</span> Phí Hoạt Động
+        </div>
+
+        <div class="px-3 py-2 mt-2 small text-uppercase text-muted fw-bold"
+          style="font-size: 0.7rem; letter-spacing: 0.05em;">Hệ thống</div>
+        <div id="side-thong-bao" class="nav-item" onclick="showPage('thong-bao')">
+          <span>📢</span> Thông Báo
+        </div>
+        <div id="side-phan-hoi" class="nav-item" onclick="showPage('phan-hoi')">
+          <span>💬</span> Phản Hồi
+        </div>
+        <div id="nav-tai-khoan" class="nav-item admin-only" onclick="showPage('tai-khoan')">
+          <span>👤</span> Tài Khoản
+        </div>
+      </nav>
+      <div class="p-3 border-top border-secondary">
+        <!-- Tạm thời ẩn nút đăng xuất khi bỏ qua bảo mật -->
+        <p class="small text-muted text-center mb-0">Chế độ xem tự do</p>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content-area">
+      <header id="mainHeader">
+        <h4 class="h5 mb-0 fw-bold text-dark" id="headerTitle">Hệ Thống Quản Lý Chung Cư</h4>
+        <div class="d-flex align-items-center bg-white px-3 py-1 rounded shadow-sm border gap-3">
+          <span id="userInfo" class="small"></span>
+          <button class="btn btn-sm btn-outline-danger" onclick="logout()">Đăng xuất</button>
+        </div>
+      </header>
+
+      <div class="container-fluid py-4">
+
+        <!-- Trang Dashboard (Mới) -->
+        <div id="dashboard" class="page active">
+          <div class="mb-5 text-center">
+            <h2 class="fw-bold text-dark">🏠 Tổng Quan Hệ Thống</h2>
+            <p class="text-muted">Chào mừng bạn trở lại! Hãy chọn một mục bên dưới để bắt đầu.</p>
+          </div>
+
+          <div class="dashboard-grid">
+            <!-- Cơ bản -->
+            <div class="dashboard-card" onclick="showPage('khu-can-ho')">
+              <div class="card-icon text-primary">🏢</div>
+              <div class="card-title">Khu Căn Hộ</div>
+              <div class="card-desc">Quản lý dạnh sách các tòa nhà và khu vực.</div>
+            </div>
+            <div class="dashboard-card" onclick="showPage('can-ho')">
+              <div class="card-icon text-success">🏠</div>
+              <div class="card-title">Căn Hộ</div>
+              <div class="card-desc">Quản lý trạng thái và thông tin từng căn hộ.</div>
+            </div>
+            <div class="dashboard-card" onclick="showPage('cu-dan')">
+              <div class="card-icon text-info">👥</div>
+              <div class="card-title">Cư Dân</div>
+              <div class="card-desc">Danh sách và thông tin chi tiết cư dân.</div>
+            </div>
+            <div class="dashboard-card" onclick="showPage('mua-ban')">
+              <div class="card-icon text-warning">🤝</div>
+              <div class="card-title">Hợp Đồng Mua Bán</div>
+              <div class="card-desc">Theo dõi các giao dịch mua bán, thuê hợp đồng.</div>
+            </div>
+
+            <!-- Phí dịch vụ -->
+            <div class="dashboard-card" onclick="showPage('dien')">
+              <div class="card-icon text-danger">⚡</div>
+              <div class="card-title">Tiền Điện</div>
+              <div class="card-desc">Xem chỉ số và hóa đơn tiền điện hàng tháng.</div>
+            </div>
+            <div class="dashboard-card" onclick="showPage('nuoc')">
+              <div class="card-icon text-primary">💧</div>
+              <div class="card-title">Tiền Nước</div>
+              <div class="card-desc">Quản lý khối lượng nước và thanh toán.</div>
+            </div>
+            <div class="dashboard-card" onclick="showPage('Tien-Gui-Xe')">
+              <div class="card-icon text-secondary">🅿️</div>
+              <div class="card-title">Tiền Gửi Xe</div>
+              <div class="card-desc">Danh sách xe và phí trông giữ hàng tháng.</div>
+            </div>
+            <div class="dashboard-card" onclick="showPage('Tien-Ve-Sinh-Chung')">
+              <div class="card-icon text-success">🧹</div>
+              <div class="card-title">Vệ Sinh & Bảo Trì</div>
+              <div class="card-desc">Các loại phí vệ sinh và bảo trì định kỳ.</div>
+            </div>
+
+            <!-- Phản hồi -->
+            <div class="dashboard-card" onclick="showPage('thong-bao')">
+              <div class="card-icon text-info">📢</div>
+              <div class="card-title">Thông Báo</div>
+              <div class="card-desc">Gửi và xem các thông báo chung cư.</div>
+            </div>
+            <div class="dashboard-card" onclick="showPage('phan-hoi')">
+              <div class="card-icon text-danger">💬</div>
+              <div class="card-title">Phản Hồi</div>
+              <div class="card-desc">Tiếp nhận và xử lý ý kiến của cư dân.</div>
+            </div>
+            <div class="dashboard-card" onclick="showPage('tai-khoan')">
+              <div class="card-icon text-success">🧹</div>
+              <div class="card-title">Tài Khoản</div>
+              <div class="card-desc">Quản lý tài khoản người dùng.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trang Khu Căn Hộ -->
+        <div id="khu-can-ho" class="page">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">🏢 Danh Sách Khu Căn Hộ</h3>
+            <div class="d-flex gap-2">
+              <input id="searchKhu" class="form-control" style="width: 250px;" placeholder="Tìm nhanh theo Mã/Tên...">
+              <button id="btnSearch" class="btn btn-primary">Tìm kiếm</button>
+              <button id="btnReset" class="btn btn-outline-light">Làm mới</button>
+            </div>
+          </div>
+
+          <div class="table-responsive shadow-sm">
+            <table class="table table-hover" id="tableKhuCanHo">
+              <thead>
+                <tr>
+                  <th>STT</th>
+                  <th>Mã Khu</th>
+                  <th>Tên Khu</th>
+                  <th>Số Tầng</th>
+                  <th>Căn/Tầng</th>
+                  <th>Địa chỉ</th>
+                  <th class="text-center" style="width: 150px;">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+
+          <div id="khuPagination" class="pagination-nav mt-3">
+            <div id="khuPaginationInfo" class="small text-muted"></div>
+            <div id="khuPaginationButtons" class="pagination-buttons"></div>
+          </div>
+
+          <!-- Form Thêm / Cập nhật -->
+          <div class="card mt-4 border-primary border-top-0 border-start-0 border-end-0 border-4">
+            <h5 class="fw-bold mb-3">🛠️ Thêm / Cập nhật khu căn hộ</h5>
+            <div class="row g-3">
+              <div class="col-md-2"><input id="maKhu" class="form-control" placeholder="Mã Khu"></div>
+              <div class="col-md-3"><input id="tenKhu" class="form-control" placeholder="Tên Khu"></div>
+              <div class="col-md-1"><input id="soTang" type="number" class="form-control" placeholder="Tầng"></div>
+              <div class="col-md-1"><input id="soCan" type="number" class="form-control" placeholder="Căn"></div>
+              <div class="col-md-3"><input id="diaChi" class="form-control" placeholder="Địa chỉ"></div>
+              <div class="col-md-2"><input id="dientich" class="form-control" type="number" step="0.1"
+                  placeholder="Diện Tích"></div>
+              <div class="col-md-2"><input id="soPhong" class="form-control" type="number" placeholder="Số Phòng"></div>
+              <div class="col-md-2">
+                <button id="btnAdd" class="btn btn-primary w-100">Xác Nhận</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGE CĂN HỘ -->
+        <div id="can-ho" class="page">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">🏠 Quản Lý Căn Hộ</h3>
+            <div class="d-flex gap-2">
+              <input type="text" id="searchCanHo" class="form-control" placeholder="Tìm theo Mã Căn hoặc Khu..."
+                style="width: 300px;">
+              <button id="btnSearchCanHo" class="btn btn-primary">Tìm</button>
+              <button id="btnResetCanHo" class="btn btn-outline-light">Làm mới</button>
+            </div>
+          </div>
+          <div class="table-responsive shadow-sm">
+            <table class="table table-hover" id="tableCanHo">
+              <thead>
+                <tr>
+                  <th>STT</th>
+                  <th>Mã Căn</th>
+                  <th>Tên Chủ Hộ</th>
+                  <th>Diện Tích</th>
+                  <th>Phòng</th>
+                  <th>Trạng Thái</th>
+                  <th>Mã Cư Dân</th>
+                  <th>Mã Khu</th>
+                  <th>Tên Khu</th>
+
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div id="canHoPagination" class="pagination-nav mt-3">
+            <div id="canHoPaginationInfo" class="small text-muted"></div>
+            <div id="canHoPaginationButtons" class="pagination-buttons"></div>
+          </div>
+        </div>
+
+        <!-- PAGE CƯ DÂN -->
+        <div id="cu-dan" class="page">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">👥 Quản Lý Cư Dân</h3>
+            <div class="d-flex gap-2">
+              <input type="text" id="searchResident" class="form-control" placeholder="Tìm theo Tên hoặc Mã Cư Dân..."
+                style="width: 300px;">
+              <button id="btnSearchResident" class="btn btn-primary">Tìm</button>
+              <button id="btnResetResident" class="btn btn-outline-light">Làm mới</button>
+            </div>
+          </div>
+          <div class="table-responsive shadow-sm">
+            <table class="table table-hover" id="tableCuDan">
+              <thead>
+                <tr>
+                  <th>Số TT</th>
+                  <th>Mã Cư Dân</th>
+                  <th>Họ Tên</th>
+                  <th>Ngày Sinh</th>
+                  <th>Giới Tính</th>
+                  <th>SĐT</th>
+                  <th>CMT</th>
+                  <th>Căn Hộ</th>
+                  <th>Khu</th>
+                  <th>Vai Trò </th>
+                  <th>Ngày Bắt Đầu</th>
+                  <th>Ngày Kết Thúc</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div id="residentPagination" class="pagination-nav mt-3">
+            <div id="residentPaginationInfo" class="small text-muted"></div>
+            <div id="residentPaginationButtons" class="pagination-buttons"></div>
+          </div>
+
+        </div>
+
+
+        <!-- PAGE PHƯƠNG TIỆN -->
+        <div id="phuong-tien" class="page">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">🚗 Quản Lý Phương Tiện</h3>
+            <div class="d-flex gap-2">
+              <input type="text" id="searchPhuongTien" class="form-control"
+                placeholder="Tìm theo Mã Cư Dân hoặc Biển Số..." style="width: 300px;">
+              <button id="btnSearchPhuongTien" class="btn btn-primary">Tìm</button>
+              <button id="btnResetPhuongTien" class="btn btn-outline-light">Làm mới</button>
+            </div>
+          </div>
+          <div class="table-responsive shadow-sm">
+            <table class="table table-hover" id="tablePhuongTien">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Mã Cư Dân</th>
+                  <th>Loại Xe</th>
+                  <th>Biển Số / Mã Đăng Ký</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div id="phuongTienPagination" class="pagination-nav mt-3">
+            <div id="phuongTienPaginationInfo" class="small text-muted"></div>
+            <div id="phuongTienPaginationButtons" class="pagination-buttons"></div>
+          </div>
+        </div>
+
+        <!-- PAGE TÀI KHOẢN -->
+        <div id="tai-khoan" class="page">
+          <h3 class="mb-4">👤 Quản Lý Tài Khoản</h3>
+          <div class="table-responsive shadow-sm">
+            <table class="table table-hover" id="tableTaiKhoan">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Username</th>
+                  <th>Mật Khẩu</th>
+                  <th>Vai Trò</th>
+                  <th class="text-center" style="width: 180px;">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div id="taiKhoanPagination" class="pagination-nav mt-3">
+            <div id="taiKhoanPaginationInfo" class="small text-muted"></div>
+            <div id="taiKhoanPaginationButtons" class="pagination-buttons"></div>
+          </div>
+          <!-- Form Thêm/Sửa Tài Khoản -->
+          <div class="card mt-4 border-primary border-top-0 border-start-0 border-end-0 border-4">
+            <h5 class="fw-bold mb-3">🔐 Thêm / Cập nhật Tài Khoản</h5>
+            <div class="row g-3">
+              <div class="col-md-3"><input id="tkUsername" class="form-control" placeholder="Tên tài khoản"></div>
+              <div class="col-md-3"><input id="tkPassword" type="password" class="form-control" placeholder="Mật khẩu">
+              </div>
+              <div class="col-md-3">
+                <select id="tkVaiTro" class="form-select">
+                  <option value="1">Nhân viên</option>
+                  <option value="0">Quản lý</option>
+                  <option value="2">Cư dân</option>
+                </select>
+              </div>
+              <div class="col-md-3"><button id="btnAddTK" class="btn btn-primary w-100">Xác Nhận</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGE MUA BÁN -->
+        <div id="mua-ban" class="page">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">🤝 Quản Lý Mua Bán</h3>
+            <div class="d-flex gap-2">
+              <input type="text" id="searchMuaBan" class="form-control" placeholder="Tìm theo Mã Căn, Tên KH, Mã Khu..."
+                style="width: 350px;">
+              <button id="btnSearchMuaBan" class="btn btn-primary">Tìm</button>
+              <button id="btnResetMuaBan" class="btn btn-outline-light">Làm mới</button>
+            </div>
+          </div>
+          <div class="table-responsive shadow-sm">
+            <table class="table table-hover" id="tableMuaBan">
+              <thead>
+                <tr>
+                  <th>STT</th>
+                  <th>Mã Hợp Đồng</th>
+                  <th>Tên KH</th>
+                  <th>Mã Căn Hộ</th>
+                  <th>Mã Cư Dân</th>
+                  <th>Địa Chỉ Khách Hàng</th>
+                  <th>Ngày Giao Dịch</th>
+                  <th class="admin-only">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div id="muaBanPagination" class="pagination-nav mt-3">
+            <div id="muaBanPaginationInfo" class="small text-muted"></div>
+            <div id="muaBanPaginationButtons" class="pagination-buttons"></div>
+          </div>
+        </div>
+
+        <!-- PAGE THÔNG BÁO -->
+        <div id="thong-bao" class="page">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">📢 Quản Lý Thông Báo</h3>
+            <div class="d-flex gap-2">
+              <input type="text" id="searchThongBao" class="form-control" placeholder="Tìm theo Tiêu đề hoặc Mã..."
+                style="width: 300px;">
+              <button id="btnSearchThongBao" class="btn btn-primary">Tìm</button>
+              <button id="btnResetThongBao" class="btn btn-outline-light">Làm mới</button>
+            </div>
+          </div>
+          <div class="table-responsive shadow-sm">
+            <table class="table table-hover" id="tableThongBao">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Mã TB</th>
+                  <th>Tiêu Đề</th>
+                  <th>Nội Dung</th>
+                  <th>Thời Gian</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div id="thongBaoPagination" class="pagination-nav mt-3">
+            <div id="thongBaoPaginationInfo" class="small text-muted"></div>
+            <div id="thongBaoPaginationButtons" class="pagination-buttons"></div>
+          </div>
+        </div>
+
+        <!-- PAGE PHẢN HỒI -->
+        <div id="phan-hoi" class="page">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">💬 Quản Lý Phản Hồi</h3>
+            <div class="d-flex gap-2">
+              <input type="text" id="searchPhanHoi" class="form-control"
+                placeholder="Tìm theo Tài khoản hoặc Nội dung..." style="width: 300px;">
+              <button id="btnSearchPhanHoi" class="btn btn-primary">Tìm</button>
+              <button id="btnResetPhanHoi" class="btn btn-outline-light">Làm mới</button>
+            </div>
+          </div>
+          <div class="table-responsive shadow-sm">
+            <table class="table table-hover" id="tablePhanHoi">
+              <thead>
+                <tr>
+                  <th>Số TT</th>
+                  <th>Tài Khoản</th>
+                  <th>Nội Dung</th>
+                  <th>Thời Gian</th>
+                  <th>Hình Ảnh</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+          <div id="phanHoiPagination" class="pagination-nav mt-3">
+            <div id="phanHoiPaginationInfo" class="small text-muted"></div>
+            <div id="phanHoiPaginationButtons" class="pagination-buttons"></div>
+          </div>
+        </div>
+
+        <!-- PAGE TIỀN ĐIỆN -->
+        <div id="dien" class="page">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">⚡ Quản Lý Tiền Điện</h3>
+            <div class="d-flex gap-2">
+              <input type="text" id="searchDien" class="form-control" placeholder="Tìm theo Mã Cư Dân/Ngày..."
+                style="width: 300px;">
+              <button class="btn btn-primary btn-search-cost" data-type="dien">Tìm</button>
+              <button class="btn btn-outline-light btn-reset-cost" data-type="dien">Làm mới</button>
+            </div>
+          </div>
+          <div class="d-flex flex-column gap-4">
+            <div class="w-100">
+              <div class="card shadow-sm mb-0">
+                <h5 class="fw-bold mb-3 border-bottom pb-2">👥 Bảng Chủ Hộ</h5>
+                <div class="table-responsive table-scroll">
+                  <table id="tbdungdien" class="table table-bordered table-sm table-hover">
+                    <thead>
+                      <tr>
+                        <th>Mã Cư Dân</th>
+                        <th>Tên Cư Dân</th>
+                        <th>Mã Căn Hộ</th>
+                        <th>Chức Vụ</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="w-100">
+              <div class="card shadow-sm">
+                <h5 class="fw-bold mb-3 border-bottom pb-2">💰 Chi Tiết Tiền Điện</h5>
+                <div class="table-responsive">
+                  <table id="tbtiendien" class="table table-bordered table-sm table-hover">
+                    <thead>
+                      <tr>
+                        <th>Mã Cư Dân</th>
+                        <th>Mã Căn Hộ</th>
+                        <th>Ngày Thu</th>
+                        <th>Tổng số Điện</th>
+                        <th>Tổng Số Tiền</th>
+                        <th>Trạng Thái</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+                <div id="dienPagination" class="pagination-nav mt-2">
+                  <div id="dienPaginationInfo" class="small text-muted"></div>
+                  <div id="dienPaginationButtons" class="pagination-buttons"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGE TIỀN NƯỚC -->
+        <div id="nuoc" class="page">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">💧 Quản Lý Tiền Nước</h3>
+            <div class="d-flex gap-2">
+              <input type="text" id="searchNuoc" class="form-control" placeholder="Tìm theo Mã Cư Dân/Ngày..."
+                style="width: 300px;">
+              <button class="btn btn-primary btn-search-cost" data-type="nuoc">Tìm</button>
+              <button class="btn btn-outline-light btn-reset-cost" data-type="nuoc">Làm mới</button>
+            </div>
+          </div>
+          <div class="d-flex flex-column gap-4">
+            <div class="w-100">
+              <div class="card shadow-sm mb-0">
+                <h5 class="fw-bold mb-3 border-bottom pb-2">👥 Bảng Chủ Hộ</h5>
+                <div class="table-responsive table-scroll">
+                  <table id="tbdungnuoc" class="table table-bordered table-sm table-hover">
+                    <thead>
+                      <tr>
+                        <th>Mã Cư Dân</th>
+                        <th>Tên Cư Dân</th>
+                        <th>Mã Căn Hộ</th>
+                        <th>Chức Vụ</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="w-100">
+              <div class="card shadow-sm">
+                <h5 class="fw-bold mb-3 border-bottom pb-2">💰 Chi Tiết Tiền Nước</h5>
+                <div class="table-responsive">
+                  <table id="tbtiennuoc" class="table table-bordered table-sm table-hover">
+                    <thead>
+                      <tr>
+                        <th>Mã Cư Dân</th>
+                        <th>Mã Căn Hộ</th>
+                        <th>Ngày Thu</th>
+                        <th>Số Khối Nước Sử Dụng</th>
+                        <th>Số Tiền Nước Phải Trả</th>
+                        <th>Trạng Thái</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+                <div id="nuocPagination" class="pagination-nav mt-2">
+                  <div id="nuocPaginationInfo" class="small text-muted"></div>
+                  <div id="nuocPaginationButtons" class="pagination-buttons"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGE VỆ SINH -->
+        <div id="Tien-Ve-Sinh-Chung" class="page">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">🧹 Phí Sân / Vệ Sinh</h3>
+            <div class="d-flex gap-2">
+              <input type="text" id="searchVeSinh" class="form-control" placeholder="Tìm theo Mã Cư Dân/Ngày..."
+                style="width: 300px;">
+              <button class="btn btn-primary btn-search-cost" data-type="vesinh">Tìm</button>
+              <button class="btn btn-outline-light btn-reset-cost" data-type="vesinh">Làm mới</button>
+            </div>
+          </div>
+          <div class="d-flex flex-column gap-4">
+            <div class="w-100">
+              <div class="card shadow-sm mb-0">
+                <h5 class="fw-bold mb-3 border-bottom pb-2">👥 Bảng Chủ Hộ</h5>
+                <div class="table-responsive table-scroll">
+                  <table id="tbvesinhchung" class="table table-bordered table-sm table-hover">
+                    <thead>
+                      <tr>
+                        <th>Mã Cư Dân </th>
+                        <th>Tên Cư Dân</th>
+                        <th> Mã Căn Hộ</th>
+                        <th>Chức Vụ </th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="w-100">
+              <div class="card shadow-sm">
+                <h5 class="fw-bold mb-3 border-bottom pb-2">💰 Chi Tiết Phí Vệ Sinh</h5>
+                <div class="table-responsive">
+                  <table id="tbtienvesinh" class="table table-bordered table-sm table-hover">
+                    <thead>
+                      <tr>
+                        <th>Mã Cư Dân</th>
+                        <th>Mã Căn Hộ</th>
+                        <th>Ngày Thu</th>
+                        <th>Số Người</th>
+                        <th>Tiền Vệ Sinh</th>
+                        <th>Trạng Thái</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+                <div id="vesinhPagination" class="pagination-nav mt-2">
+                  <div id="vesinhPaginationInfo" class="small text-muted"></div>
+                  <div id="vesinhPaginationButtons" class="pagination-buttons"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGE GỬI XE -->
+        <div id="Tien-Gui-Xe" class="page">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">🅿️ Quản Lý Tiền Gửi Xe</h3>
+            <div class="d-flex gap-2">
+              <input type="text" id="searchGuiXe" class="form-control" placeholder="Tìm theo Mã Cư Dân/Ngày..."
+                style="width: 300px;">
+              <button class="btn btn-primary btn-search-cost" data-type="guixe">Tìm</button>
+              <button class="btn btn-outline-light btn-reset-cost" data-type="guixe">Làm mới</button>
+            </div>
+          </div>
+          <div class="d-flex flex-column gap-4">
+            <div class="w-100">
+              <div class="card shadow-sm mb-0">
+                <h5 class="fw-bold mb-3 border-bottom pb-2">👥 Bảng Chủ Hộ</h5>
+                <div class="table-responsive table-scroll">
+                  <table id="tbguixe" class="table table-bordered table-sm table-hover">
+                    <thead>
+                      <tr>
+                        <th>Mã Cư Dân</th>
+                        <th>Tên Cư Dân</th>
+                        <th>Mã Căn Hộ</th>
+                        <th>Chức Vụ</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="w-100">
+              <div class="card shadow-sm">
+                <h5 class="fw-bold mb-3 border-bottom pb-2">💰 Chi Tiết Phí Gửi Xe</h5>
+                <div class="table-responsive">
+                  <table id="tbtienguixe" class="table table-bordered table-sm table-hover">
+                    <thead>
+                      <tr>
+                        <th>Mã Cư Dân</th>
+                        <th>Mã Căn Hộ</th>
+                        <th> Ngày Thu</th>
+                        <th>Xe Ôtô</th>
+                        <th> Tiền Xe Ôtô</th>
+                        <th>Xe Máy</th>
+                        <th>Tiền Gửi Xe Máy</th>
+                        <th>Xe Đạp</th>
+                        <th>Tiền Gửi Xe Đạp</th>
+                        <th>Tổng Tiền Gửi Xe</th>
+                        <th>Trạng Thái</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+                <div id="guixePagination" class="pagination-nav mt-2">
+                  <div id="guixePaginationInfo" class="small text-muted"></div>
+                  <div id="guixePaginationButtons" class="pagination-buttons"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGE DUY TRÌ -->
+        <div id="Chi-Phi-Duy-Tri" class="page">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">🛠️ Quản Lý Phí Duy Trì</h3>
+            <div class="d-flex gap-2">
+              <input type="text" id="searchDuyTri" class="form-control" placeholder="Tìm theo Mã Cư Dân/Ngày..."
+                style="width: 300px;">
+              <button class="btn btn-primary btn-search-cost" data-type="duytri">Tìm</button>
+              <button class="btn btn-outline-light btn-reset-cost" data-type="duytri">Làm mới</button>
+            </div>
+          </div>
+          <div class="d-flex flex-column gap-4">
+            <div class="w-100">
+              <div class="card shadow-sm mb-0">
+                <h5 class="fw-bold mb-3 border-bottom pb-2">👥 Bảng Chủ Hộ</h5>
+                <div class="table-responsive table-scroll">
+                  <table id="tbduytri" class="table table-bordered table-sm table-hover">
+                    <thead>
+                      <tr>
+                        <th>Mã Cư Dân </th>
+                        <th>Tên Cư Dân</th>
+                        <th> Mã Căn Hộ</th>
+                        <th>Chức Vụ </th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="w-100">
+              <div class="card shadow-sm">
+                <h5 class="fw-bold mb-3 border-bottom pb-2">💰 Chi Tiết Phí Duy Trì</h5>
+                <div class="table-responsive">
+                  <table id="tbtienduytri" class="table table-bordered table-sm table-hover">
+                    <thead>
+                      <tr>
+                        <th>Mã Cư Dân</th>
+                        <th>Mã Căn Hộ</th>
+                        <th>Ngày Thu</th>
+                        <th>Số Người</th>
+                        <th>Tiền Phí Duy Trì</th>
+                        <th>Trạng Thái</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+                <div id="duytriPagination" class="pagination-nav mt-2">
+                  <div id="duytriPaginationInfo" class="small text-muted"></div>
+                  <div id="duytriPaginationButtons" class="pagination-buttons"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAGE HOẠT ĐỘNG -->
+        <div id="Hoat-Dong" class="page">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-0">🎭 Quản Lý Phí Hoạt Động</h3>
+            <div class="d-flex gap-2">
+              <input type="text" id="searchHoatDong" class="form-control" placeholder="Tìm theo Mã Cư Dân/Ngày..."
+                style="width: 300px;">
+              <button class="btn btn-primary btn-search-cost" data-type="hoatdong">Tìm</button>
+              <button class="btn btn-outline-light btn-reset-cost" data-type="hoatdong">Làm mới</button>
+            </div>
+          </div>
+          <div class="d-flex flex-column gap-4">
+            <div class="w-100">
+              <div class="card shadow-sm mb-0">
+                <h5 class="fw-bold mb-3 border-bottom pb-2">👥 Bảng Chủ Hộ</h5>
+                <div class="table-responsive table-scroll">
+                  <table id="tbhoatdong" class="table table-bordered table-sm table-hover">
+                    <thead>
+                      <tr>
+                        <th>Mã Cư Dân </th>
+                        <th>Tên Cư Dân</th>
+                        <th> Mã Căn Hộ</th>
+                        <th>Chức Vụ </th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="w-100">
+              <div class="card shadow-sm">
+                <h5 class="fw-bold mb-3 border-bottom pb-2">💰 Chi Tiết Phí Hoạt Động</h5>
+                <div class="table-responsive">
+                  <table id="tbtienhoatdong" class="table table-bordered table-sm table-hover">
+                    <thead>
+                      <tr>
+                        <th>Mã Cư Dân</th>
+                        <th>Mã Căn Hộ</th>
+                        <th>Ngày Thu</th>
+                        <th>Số Người</th>
+                        <th>Tiền Chi Phí Hoạt Động</th>
+                        <th>Trạng Thái</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+                <!-- Pagination for Hoat Dong Details -->
+                <div id="hoatdongPagination" class="pagination-nav mt-2">
+                  <div id="hoatdongPaginationInfo" class="small text-muted"></div>
+                  <div id="hoatdongPaginationButtons" class="pagination-buttons"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+  </div>
+
+  <footer class="bg-primary text-white text-center py-2">
+    © 2025 Dashboard
+  </footer>
+
+  .footer {
+  background-image: url("video/background1.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  }
+
+
+  <!-- Custom Scripts -->
+  <script src="/js/api-client.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Initialize the centralized UI Manager based on user roles
+      await UIManager.init();
+
+      // Update greeting info
+      if (UIManager.role) {
+        const isAdmin = UIManager.role === 'ROLE_ADMIN' || UIManager.role === 'ADMIN';
+        const roleLabel = isAdmin ? 'Quản trị viên' : 'Nhân viên';
+        document.getElementById('userInfo').textContent = `Chào, ${roleLabel}`;
+      }
+
+      // --- State Variables (Move to top to avoid TDZ) ---
+      const API = '/api/khu';
+      const table = document.getElementById('tableKhuCanHo');
+      const tbodyKhu = table.querySelector('tbody');
+      const nav = table.nextElementSibling;
+
+      let allData = [];
+      let filteredData = [];
+      let currentPage = 1;
+      const perPage = 8;
+
+      let khuCurrentPage = 1;
+      const khuPerPage = 8;
+      let khuTotalElements = 0;
+      let khuSearchText = '';
+
+      let canHoCurrentPage = 1;
+      const canHoPerPage = 10;
+      let canHoTotalElements = 0;
+      let canHoSearchText = '';
+
+      let allTaiKhoanRaw = [];
+      let allCuDanRaw = [];
+      let cuDanCurrentPage = 1;
+      const cuDanPerPage = 10;
+      let cuDanTotalElements = 0;
+      let cuDanSearchText = '';
+
+      let allPhuongTienRaw = [];
+      let allMuaBanRaw = [];
+      let allChuHo = [];
+
+      let thongBaoCurrentPage = 1;
+      const thongBaoPerPage = 10;
+      let thongBaoTotalElements = 0;
+      let thongBaoSearchText = '';
+
+      let taiKhoanCurrentPage = 1;
+      const taiKhoanPerPage = 10;
+      let taiKhoanTotalElements = 0;
+      let taiKhoanSearchText = '';
+
+      let muaBanCurrentPage = 1;
+      const muaBanPerPage = 10;
+      let muaBanTotalElements = 0;
+      let muaBanSearchText = '';
+
+      let dienCurrentPage = 1; let dienTotalElements = 0; let dienSearchText = '';
+      let nuocCurrentPage = 1; let nuocTotalElements = 0; let nuocSearchText = '';
+      let vesinhCurrentPage = 1; let vesinhTotalElements = 0; let vesinhSearchText = '';
+      let guixeCurrentPage = 1; let guixeTotalElements = 0; let guixeSearchText = '';
+      let duytriCurrentPage = 1; let duytriTotalElements = 0; let duytriSearchText = '';
+      let hoatdongCurrentPage = 1; let hoatdongTotalElements = 0; let hoatdongSearchText = '';
+      const costPerPage = 10;
+
+      let phanHoiCurrentPage = 1;
+      const phanHoiPerPage = 10;
+      let phanHoiTotalElements = 0;
+      let phanHoiSearchText = '';
+
+      let phuongTienCurrentPage = 1;
+      const phuongTienPerPage = 10;
+      let phuongTienTotalElements = 0;
+      let phuongTienSearchText = '';
+
+      let allDien = [], allNuoc = [], allVeSinh = [], allGuiXe = [], allDuyTri = [], allHoatDong = [];
+      let currentChiPhiTab = 'dien';
+
+      // --- Helper Phân Trang Rút Gọn (Đầu, Cuối, Hiện tại) ---
+      function renderGenericPagination(container, totalPages, currentPage, onPageClick) {
+        if (!container) return;
+        container.innerHTML = '';
+        if (totalPages < 1) return;
+
+        // Nút Trước
+        const prevBtn = document.createElement('button');
+        prevBtn.textContent = 'Trước';
+        prevBtn.className = `btn btn-sm btn-outline-light me-1`;
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.onclick = () => onPageClick(currentPage - 1);
+        container.appendChild(prevBtn);
+
+        const pages = new Set([1, totalPages, currentPage]);
+        const sortedPages = Array.from(pages).sort((a, b) => a - b);
+
+        sortedPages.forEach((p, idx) => {
+          if (idx > 0 && p > sortedPages[idx - 1] + 1) {
+            const span = document.createElement('span');
+            span.textContent = '...';
+            span.className = 'mx-1 text-muted py-1 d-inline-block';
+            container.appendChild(span);
+          }
+          const btn = document.createElement('button');
+          btn.textContent = p;
+          btn.className = `btn btn-sm ${p === currentPage ? 'btn-primary' : 'btn-outline-light'} mx-1`;
+          btn.style.minWidth = '35px';
+          btn.onclick = () => onPageClick(p);
+          container.appendChild(btn);
+        });
+
+        // Nút Sau
+        const nextBtn = document.createElement('button');
+        nextBtn.textContent = 'Sau';
+        nextBtn.className = `btn btn-sm btn-outline-light ms-1`;
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.onclick = () => onPageClick(currentPage + 1);
+        container.appendChild(nextBtn);
+      }
+
+      // --- Initialization ---
+      if (UIManager.role) {
+        const isAdmin = UIManager.role === 'ROLE_ADMIN' || UIManager.role === 'ADMIN';
+        const roleLabel = isAdmin ? 'Quản trị viên' : 'Nhân viên';
+        document.getElementById('userInfo').textContent = `Chào, ${roleLabel}`;
+      }
+
+      // --- Load dữ liệu Khu ---
+      async function loadDanhSachKhu() {
+        try {
+          const pageObj = await ApiClient.khu.getPaged(khuCurrentPage - 1, khuPerPage, khuSearchText);
+          khuTotalElements = pageObj.totalElements;
+          renderKhuTable(pageObj.content);
+          renderKhuPagination(pageObj.totalPages);
+        } catch (err) {
+          console.error(err);
+          const tbody = document.getElementById('tableKhuCanHo').querySelector('tbody');
+          if (tbody) tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">Lỗi tải dữ liệu</td></tr>';
+        }
+      }
+
+      // --- Render bảng Khu ---
+      function renderKhuTable(data) {
+        const tbody = document.getElementById('tableKhuCanHo').querySelector('tbody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        if (!data || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="text-center">Không có dữ liệu khu căn hộ</td></tr>';
+          return;
+        }
+
+        data.forEach((khu, i) => {
+          const tr = document.createElement('tr');
+          const startIdx = (khuCurrentPage - 1) * khuPerPage;
+          tr.innerHTML = `
+                <td>${startIdx + i + 1}</td>
+                <td><span class="badge bg-light text-dark border">${khu.maKhu}</span></td>
+                <td class="fw-bold text-primary">${khu.tenKhu}</td>
+                <td><span class="badge bg-info text-white">${khu.soTang}</span></td>
+                <td><span class="badge bg-secondary text-white">${khu.soCanTT}</span></td>
+                <td><small class="text-muted">${khu.diaChi}</small></td>
+                <td class="text-center">
+                  <div class="d-flex gap-1 justify-content-center">
+                    <button class="btn btn-sm btn-warning btnEdit" data-ma="${khu.maKhu}">Sửa</button>
+                    <button class="btn btn-sm btn-danger btnDelete btn-delete-protected" data-ma="${khu.maKhu}">Xóa</button>
+                  </div>
+                </td>
+                `;
+          tbody.appendChild(tr);
+        });
+
+        // Fill empty rows
+        for (let i = data.length; i < khuPerPage; i++) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td colspan="7" class="py-3">&nbsp;</td>`;
+          tbody.appendChild(tr);
+        }
+      }
+
+      function renderKhuPagination(totalPages) {
+        const container = document.getElementById('khuPaginationButtons');
+        const info = document.getElementById('khuPaginationInfo');
+        if (!container || !info) return;
+        const startIdx = (khuCurrentPage - 1) * khuPerPage + 1;
+        const endIdx = Math.min(khuCurrentPage * khuPerPage, khuTotalElements);
+        info.textContent = khuTotalElements > 0 ? `Đang xem ${startIdx} - ${endIdx} trong tổng số ${khuTotalElements}` : 'Không có dữ liệu';
+        renderGenericPagination(container, totalPages, khuCurrentPage, (p) => {
+          khuCurrentPage = p; loadDanhSachKhu();
+        });
+      }
+
+      // --- Event delegation ---
+      tbodyKhu.addEventListener('click', async e => {
+        const btnAdd = document.getElementById('btnAdd');
+        if (e.target.classList.contains('btnDelete')) {
+          const maKhu = e.target.dataset.ma;
+          if (!confirm(`Xóa khu ${maKhu}?`)) return;
+          try {
+            const res = await fetch(`${API}/${maKhu}`, { method: 'DELETE' });
+            if (!res.ok) throw new Error('Xóa thất bại');
+            await loadDanhSachKhu();
+            await loadCanHo();
+          } catch (err) { alert(err.message); }
+        }
+        if (e.target.classList.contains('btnEdit')) {
+          const tr = e.target.closest('tr');
+          document.getElementById('maKhu').value = tr.children[1].textContent;
+          document.getElementById('tenKhu').value = tr.children[2].textContent;
+          document.getElementById('soTang').value = tr.children[3].textContent;
+          document.getElementById('soCan').value = tr.children[4].textContent;
+          document.getElementById('diaChi').value = tr.children[5].textContent;
+          btnAdd.textContent = 'Cập nhật';
+          btnAdd.dataset.edit = tr.children[1].textContent;
+          document.getElementById('maKhu').disabled = true;
+        }
+      });
+
+      // --- Thêm / Cập nhật ---
+      document.getElementById('btnAdd').addEventListener('click', async () => {
+        const btnAdd = document.getElementById('btnAdd');
+        const editMa = btnAdd.dataset.edit;
+        const maKhu = document.getElementById('maKhu').value.trim();
+        const tenKhu = document.getElementById('tenKhu').value.trim();
+        const soTang = parseInt(document.getElementById('soTang').value);
+        const soCanTT = parseInt(document.getElementById('soCan').value);
+        const diaChi = document.getElementById('diaChi').value.trim();
+
+        // SỬA: Chỉ kiểm tra tên khu khi thêm mới
+        if (!editMa) {
+          // THÊM MỚI - KHÔNG cần maKhu
+          if (!tenKhu) { alert('Nhập Tên Khu'); return; }
+        } else {
+          // SỬA - Cần cả maKhu và tenKhu
+          if (!maKhu || !tenKhu) { alert('Nhập Mã Khu và Tên Khu'); return; }
+        }
+
+        if (isNaN(soTang) || isNaN(soCanTT)) {
+          alert('Số tầng và số căn phải là số');
+          return;
+        }
+
+        try {
+          if (editMa) {
+            // TRƯỜNG HỢP SỬA
+            const dto = { maKhu, tenKhu, soTang, soCanTT, diaChi };
+            const res = await fetch(`${API}/${editMa}`, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(dto)
+            });
+            if (!res.ok) throw new Error('Cập nhật thất bại');
+            btnAdd.textContent = 'Thêm';
+            delete btnAdd.dataset.edit;
+            document.getElementById('maKhu').disabled = false;
+          } else {
+            // TRƯỜNG HỢP THÊM MỚI
+            const dienTich = parseFloat(document.getElementById('dientich').value);
+            const soPhong = parseInt(document.getElementById('soPhong').value);
+
+            if (isNaN(dienTich) || isNaN(soPhong)) {
+              alert('Diện tích và số phòng phải là số');
+              return;
+            }
+
+            const res = await fetch(`${API}/add-complex`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                tenKhu,
+                soTang,
+                soCanTT,
+                diaChi,
+                dienTich,
+                soPhong,
+
+              })
+            });
+
+            if (!res.ok) {
+              const errorText = await res.text();
+              throw new Error(errorText || 'Thêm thất bại');
+            }
+          }
+
+          // Reset form
+          document.getElementById('maKhu').value = '';
+          document.getElementById('tenKhu').value = '';
+          document.getElementById('soTang').value = '';
+          document.getElementById('soCan').value = '';
+          document.getElementById('diaChi').value = '';
+          document.getElementById('dientich').value = '';
+          document.getElementById('soPhong').value = '';
+
+
+          await loadDanhSachKhu();
+          await loadCanHo();
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+      ;
+
+      // --- Load Căn Hộ ---
+      async function loadCanHo() {
+        try {
+          const pageObj = await ApiClient.canho.getPaged(canHoCurrentPage - 1, canHoPerPage, canHoSearchText);
+          canHoTotalElements = pageObj.totalElements;
+          renderCanHoTable(pageObj.content);
+          renderCanHoPagination(pageObj.totalPages);
+        } catch (e) {
+          console.error(e);
+          const tbody = document.querySelector('#tableCanHo tbody');
+          if (tbody) tbody.innerHTML = '<tr><td colspan="8" class="text-center text-danger">Lỗi tải dữ liệu</td></tr>';
+        }
+      }
+
+      function renderCanHoTable(data) {
+        const tbody = document.querySelector('#tableCanHo tbody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        if (!data || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="9" class="text-center">Không có căn hộ nào</td></tr>';
+          return;
+        }
+
+        data.forEach((c, i) => {
+          const tr = document.createElement('tr');
+          const startIdx = (canHoCurrentPage - 1) * canHoPerPage;
+          tr.innerHTML = `
+                <td>${startIdx + i + 1}</td>
+                <td class="fw-bold text-primary">${c.maCanHo}</td>
+                <td class="fw-bold">${c.tenCuDan || '<span class="text-muted small">---</span>'}</td>
+                <td>${c.dienTich} m²</td>
+                <td>${c.soPhong}</td>
+                <td><span class="badge ${c.trangThai ? 'bg-success' : 'bg-warning'}">${c.trangThai ? 'Đã bán' : 'Trống'}</span></td>
+                <td><small>${c.maCuDan || '-'}</small></td>
+                <td><span class="badge bg-light text-dark border">${c.maKhu}</span></td>
+                <td><small>${c.tenKhu || '-'}</small></td>
+
+              `;
+          tbody.appendChild(tr);
+        });
+
+        // Fill empty rows
+        for (let i = data.length; i < canHoPerPage; i++) {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td colspan="9" class="py-3">&nbsp;</td>`;
+          tbody.appendChild(tr);
+        }
+      }
+
+      function renderCanHoPagination(totalPages) {
+        const container = document.getElementById('canHoPaginationButtons');
+        const info = document.getElementById('canHoPaginationInfo');
+        if (!container || !info) return;
+        const startIdx = (canHoCurrentPage - 1) * canHoPerPage + 1;
+        const endIdx = Math.min(canHoCurrentPage * canHoPerPage, canHoTotalElements);
+        info.textContent = canHoTotalElements > 0 ? `Đang xem ${startIdx} - ${endIdx} trong tổng số ${canHoTotalElements}` : 'Không có dữ liệu';
+        renderGenericPagination(container, totalPages, canHoCurrentPage, (p) => {
+          canHoCurrentPage = p; loadCanHo();
+        });
+      }
+
+      document.getElementById('btnSearchCanHo').addEventListener('click', () => {
+        canHoSearchText = document.getElementById('searchCanHo').value.trim();
+        canHoCurrentPage = 1;
+        loadCanHo();
+      });
+
+      document.getElementById('btnResetCanHo').addEventListener('click', () => {
+        document.getElementById('searchCanHo').value = '';
+        canHoSearchText = '';
+        canHoCurrentPage = 1;
+        loadCanHo();
+      });
+
+      // --- Load Tài Khoản (Admin only) ---
+      // (Removing redundant allTaiKhoanRaw)
+      async function loadTaiKhoan() {
+        const isAdmin = UIManager.role === 'ROLE_ADMIN' || UIManager.role === 'ADMIN';
+        if (!isAdmin) return;
+        try {
+          const pageObj = await ApiClient.user.getPaged(taiKhoanCurrentPage - 1, taiKhoanPerPage, taiKhoanSearchText);
+          taiKhoanTotalElements = pageObj.totalElements;
+          allTaiKhoanRaw = pageObj.content; // Cập nhật lại cho edit/delete logic
+          renderTaiKhoanTable(pageObj.content);
+          renderTaiKhoanPagination(pageObj.totalPages);
+        } catch (e) {
+          console.error(e);
+          const tbody = document.querySelector('#tableTaiKhoan tbody');
+          if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Lỗi tải dữ liệu</td></tr>';
+        }
+      }
+
+      function renderTaiKhoanTable(data) {
+        const tbody = document.querySelector('#tableTaiKhoan tbody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        if (!data || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="text-center">Không có tài khoản nào</td></tr>';
+          return;
+        }
+        data.forEach((u, i) => {
+          const tr = document.createElement('tr');
+          const startIdx = (taiKhoanCurrentPage - 1) * taiKhoanPerPage;
+          // Vai trò: 0 - Quản lý, 1 - Nhân viên, 2 - Cư dân
+          const vaiTroText = u.vaiTro === 0 ? 'Quản lý' :
+            u.vaiTro === 1 ? 'Nhân viên' :
+              u.vaiTro === 2 ? 'Cư dân' :
+                'Không xác định';
+
+          const vaiTroBadge = u.vaiTro === 0 ? 'bg-danger' :  // Quản lý - Đỏ
+            u.vaiTro === 1 ? 'bg-info' :    // Nhân viên - Xanh dương
+              u.vaiTro === 2 ? 'bg-success' : // Cư dân - Xanh lá
+                'bg-secondary';                  // Khác - Xám
+          tr.innerHTML = `
+                <td>${startIdx + i + 1}</td>
+                <td class="fw-bold">${u.username}</td>
+                <td><small class="text-muted">${u.matKhau ? '••••••••' : '-'}</small></td>
+                <td><span class="badge ${vaiTroBadge}">${vaiTroText}</span></td>
+                <td class="text-center">
+                  <div class="d-flex gap-1 justify-content-center">
+                    <button class="btn btn-sm btn-warning btnEditTK" data-id="${u.username}">Sửa</button>
+                    <button class="btn btn-sm btn-danger btnDeleteTK" data-id="${u.username}">Xóa</button>
+                  </div>
+                </td>
+              `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function renderTaiKhoanPagination(totalPages) {
+        const container = document.getElementById('taiKhoanPaginationButtons');
+        const info = document.getElementById('taiKhoanPaginationInfo');
+        if (!container || !info) return;
+        const start = (taiKhoanCurrentPage - 1) * taiKhoanPerPage + 1;
+        const end = Math.min(taiKhoanCurrentPage * taiKhoanPerPage, taiKhoanTotalElements);
+        info.textContent = taiKhoanTotalElements > 0 ? `Đang xem ${start} - ${end} trong tổng số ${taiKhoanTotalElements}` : 'Không có dữ liệu';
+        renderGenericPagination(container, totalPages, taiKhoanCurrentPage, (p) => {
+          taiKhoanCurrentPage = p; loadTaiKhoan();
+        });
+      }
+
+      // Thêm / Cập nhật tài khoản
+      document.getElementById('btnAddTK').addEventListener('click', async () => {
+        const btn = document.getElementById('btnAddTK');
+        const data = {
+          tenTaiKhoan: document.getElementById('tkUsername').value.trim(),
+          matKhau: document.getElementById('tkPassword').value.trim(),
+          vaiTro: parseInt(document.getElementById('tkVaiTro').value)
+        };
+        if (!data.tenTaiKhoan) { alert('Vui lòng nhập tên tài khoản'); return; }
+        if (!btn.dataset.edit && !data.matKhau) { alert('Vui lòng nhập mật khẩu'); return; }
+        try {
+          if (btn.dataset.edit) {
+            await ApiClient.user.update(btn.dataset.edit, data);
+            alert('Cập nhật tài khoản thành công!');
+          } else {
+            await ApiClient.user.save(data);
+            alert('Thêm tài khoản thành công!');
+          }
+          document.getElementById('tkUsername').value = '';
+          document.getElementById('tkPassword').value = '';
+          document.getElementById('tkUsername').disabled = false;
+          btn.textContent = 'Xác Nhận';
+          delete btn.dataset.edit;
+          await loadTaiKhoan();
+        } catch (e) { alert('Lỗi: ' + e.message); }
+      });
+
+      // Search Events for KhuCanHo
+      document.getElementById('btnSearch').addEventListener('click', () => {
+        khuSearchText = document.getElementById('searchKhu').value.trim();
+        khuCurrentPage = 1;
+        loadDanhSachKhu();
+      });
+
+      document.getElementById('btnReset').addEventListener('click', () => {
+        document.getElementById('searchKhu').value = '';
+        khuSearchText = '';
+        khuCurrentPage = 1;
+        loadDanhSachKhu();
+      });
+
+      // Sửa / Xóa tài khoản từ bảng
+      document.querySelector('#tableTaiKhoan').addEventListener('click', async (e) => {
+        const id = e.target.dataset.id;
+        if (e.target.classList.contains('btnDeleteTK')) {
+          if (!confirm(`Xóa tài khoản "${id}"?`)) return;
+          try {
+            await ApiClient.user.delete(id);
+            await loadTaiKhoan();
+          } catch (err) { alert('Lỗi: ' + err.message); }
+        }
+        if (e.target.classList.contains('btnEditTK')) {
+          const u = allTaiKhoanRaw.find(x => x.username === id); if (!u) return;
+          document.getElementById('tkUsername').value = u.username;
+          document.getElementById('tkUsername').disabled = true;
+          document.getElementById('tkPassword').value = '';
+          document.getElementById('tkPassword').placeholder = 'Để trống nếu không đổi MK';
+          document.getElementById('tkVaiTro').value = String(u.vaiTro);
+          const btn = document.getElementById('btnAddTK');
+          btn.textContent = 'Cập Nhật'; btn.dataset.edit = u.username;
+          window.scrollTo({ top: document.getElementById('btnAddTK').offsetTop - 100, behavior: 'smooth' });
+        }
+      });
+
+      // (Removing redundant cuDan variables)
+
+      // --- Load Cư Dân ---
+      async function loadCuDan() {
+        try {
+          const pageObj = await ApiClient.cudan.getPaged(cuDanCurrentPage - 1, cuDanPerPage, cuDanSearchText);
+          allCuDanRaw = pageObj.content;
+          cuDanTotalElements = pageObj.totalElements;
+          renderCuDanTable(pageObj.content);
+          renderCuDanPagination(pageObj.totalPages);
+        } catch (e) {
+          console.error(e);
+          const tbody = document.querySelector('#tableCuDan tbody');
+          if (tbody) tbody.innerHTML = '<tr><td colspan="10" class="text-center text-danger">Lỗi tải dữ liệu</td></tr>';
+        }
+      }
+
+      function renderCuDanTable(data) {
+        const tbody = document.querySelector('#tableCuDan tbody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        if (!data || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="10" class="text-center">Không có dữ liệu cư dân</td></tr>';
+          return;
+        }
+        data.forEach((c, i) => {
+          const tr = document.createElement('tr');
+          const startIdx = (cuDanCurrentPage - 1) * cuDanPerPage;
+
+          // Lấy danh sách quan hệ đang hoạt động (chưa kết thúc)
+          const activeRels = (c.danhSachQuanHe || []).filter(qh => !qh.ngayKetThuc);
+
+          // Hiển thị căn hộ từ danhSachQuanHe
+          const canHoHtml = activeRels.length > 0
+            ? activeRels.map(qh => `<span class="badge bg-info-subtle text-info border border-info-subtle me-1">${qh.maCanHo}</span>`).join('')
+            : `<span class="badge bg-light text-dark border">${c.maCanHo || '-'}</span>`;
+
+          // Hiển thị khu từ danhSachQuanHe
+          const khuSet = activeRels.length > 0
+            ? [...new Set(activeRels.map(qh => qh.tenKhu || qh.maCanHo?.substring(0, 2) || '-'))].join(', ')
+            : (c.maKhu || '-');
+
+          // Hiển thị vai trò từ danhSachQuanHe
+          let vaiTroHtml;
+          if (activeRels.length > 0) {
+            const roles = (activeRels || []).map(qh => {
+              let roleText, roleClass;
+              switch (qh.vaiTro) {
+                case 0: roleText = 'Chủ hộ'; roleClass = 'bg-primary'; break;
+                case 1: roleText = 'Thành viên'; roleClass = 'bg-secondary'; break;
+                case 2: roleText = 'Chủ hộ thuê'; roleClass = 'bg-warning'; break;
+                case 3: roleText = 'Thành viên thuê'; roleClass = 'bg-info'; break;
+                default: roleText = 'Không xác định'; roleClass = 'bg-light text-dark';
+              }
+              return `<span class="badge ${roleClass} me-1">${roleText}</span>`;
+            });
+            vaiTroHtml = Array.from(new Set(roles)).join('');
+          } else {
+            let roleText, roleClass;
+            switch (c.vaiTro) {
+              case 0: roleText = 'Chủ hộ'; roleClass = 'bg-primary'; break;
+              case 1: roleText = 'Thành viên'; roleClass = 'bg-secondary'; break;
+              case 2: roleText = 'Chủ hộ thuê'; roleClass = 'bg-warning'; break;
+              case 3: roleText = 'Thành viên thuê'; roleClass = 'bg-info'; break;
+              default: roleText = 'Không xác định'; roleClass = 'bg-light text-dark';
+            }
+            vaiTroHtml = `<span class="badge ${roleClass}">${roleText}</span>`;
+          }
+
+          tr.innerHTML = `
+                  <td>${startIdx + i + 1}</td>
+                  <td>${c.maCuDan}</td>
+                  <td class="fw-bold text-primary">${c.tenCuDan || c.hoTen || '-'}</td>
+                  <td>${c.ngaySinh || '-'}</td>
+                  <td>${c.gioiTinh ? 'Nam' : 'Nữ'}</td>
+                  <td>${c.soDT || '-'}</td>
+                  <td>${c.soCMT || '-'}</td>
+                  <td>${canHoHtml}</td>
+                  <td>${khuSet}</td>
+                  <td>${vaiTroHtml}</td>
+                  <td>${(() => {
+              const activeRel = (c.danhSachQuanHe || []).find(qh => !qh.ngayKetThuc);
+              return activeRel ? (activeRel.ngayBatDau || '-') : (c.ngayBatDau || '-');
+            })()}</td>
+                  <td>${(() => {
+              const activeRel = (c.danhSachQuanHe || []).find(qh => !qh.ngayKetThuc);
+              return activeRel ? (activeRel.ngayKetThuc || '<span class="text-success small">Đang ở</span>') : (c.ngayKetThuc || '-');
+            })()}</td>
+                `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function renderCuDanPagination(totalPages) {
+        const container = document.getElementById('residentPaginationButtons');
+        const info = document.getElementById('residentPaginationInfo');
+        if (!container || !info) return;
+        const start = (cuDanCurrentPage - 1) * cuDanPerPage + 1;
+        const end = Math.min(cuDanCurrentPage * cuDanPerPage, cuDanTotalElements);
+        info.textContent = cuDanTotalElements > 0 ? `Đang xem ${start} - ${end} trong tổng số ${cuDanTotalElements}` : 'Không có dữ liệu';
+        renderGenericPagination(container, totalPages, cuDanCurrentPage, (p) => {
+          cuDanCurrentPage = p; loadCuDan();
+        });
+      }
+
+      document.getElementById('btnSearchResident').addEventListener('click', () => {
+        cuDanSearchText = document.getElementById('searchResident').value.trim();
+        cuDanCurrentPage = 1;
+        loadCuDan();
+      });
+
+      document.getElementById('btnResetResident').addEventListener('click', () => {
+        document.getElementById('searchResident').value = '';
+        cuDanSearchText = '';
+        cuDanCurrentPage = 1;
+        loadCuDan();
+      });
+
+      // (Removing redundant allPhuongTienRaw)
+      // --- Load Phương Tiện ---
+      async function loadPhuongTien() {
+        try {
+          const pageObj = await ApiClient.phuongtien.getPaged(phuongTienCurrentPage - 1, phuongTienPerPage, phuongTienSearchText);
+          phuongTienTotalElements = pageObj.totalElements;
+          renderPhuongTienTable(pageObj.content);
+          renderPhuongTienPagination(pageObj.totalPages);
+        } catch (e) {
+          console.error(e);
+          const tbody = document.querySelector('#tablePhuongTien tbody');
+          if (tbody) tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">Lỗi tải dữ liệu</td></tr>';
+        }
+      }
+
+      function renderPhuongTienTable(data) {
+        const tbody = document.querySelector('#tablePhuongTien tbody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        if (!data || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" class="text-center">Không có dữ liệu phương tiện</td></tr>';
+          return;
+        }
+        data.forEach((p, i) => {
+          const tr = document.createElement('tr');
+          const startIdx = (phuongTienCurrentPage - 1) * phuongTienPerPage;
+          tr.innerHTML = `
+                <td>${startIdx + i + 1}</td>
+                <td>${p.maCuDan}</td>
+                <td><span class="badge bg-info">${p.loaiXe}</span></td>
+                <td>${p.maDangKy}</td>
+              `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function renderPhuongTienPagination(totalPages) {
+        const container = document.getElementById('phuongTienPaginationButtons');
+        const info = document.getElementById('phuongTienPaginationInfo');
+        if (!container || !info) return;
+        const start = (phuongTienCurrentPage - 1) * phuongTienPerPage + 1;
+        const end = Math.min(phuongTienCurrentPage * phuongTienPerPage, phuongTienTotalElements);
+        info.textContent = phuongTienTotalElements > 0 ? `Đang xem ${start} - ${end} trong tổng số ${phuongTienTotalElements}` : 'Không có dữ liệu';
+        renderGenericPagination(container, totalPages, phuongTienCurrentPage, (p) => {
+          phuongTienCurrentPage = p; loadPhuongTien();
+        });
+      }
+
+      document.getElementById('btnSearchPhuongTien').addEventListener('click', () => {
+        phuongTienSearchText = document.getElementById('searchPhuongTien').value.trim();
+        phuongTienCurrentPage = 1;
+        loadPhuongTien();
+      });
+
+      document.getElementById('btnResetPhuongTien').addEventListener('click', () => {
+        document.getElementById('searchPhuongTien').value = '';
+        phuongTienSearchText = '';
+        phuongTienCurrentPage = 1;
+        loadPhuongTien();
+      });
+
+      // (Removing redundant allMuaBanRaw)
+      // --- Load Mua Bán (Hợp Đồng) ---
+      async function loadMuaBan() {
+        try {
+          const pageObj = await ApiClient.hopdong.getPaged(muaBanCurrentPage - 1, muaBanPerPage, muaBanSearchText);
+          muaBanTotalElements = pageObj.totalElements;
+          renderMuaBanTable(pageObj.content);
+          renderMuaBanPagination(pageObj.totalPages);
+        } catch (e) {
+          console.error(e);
+          const tbody = document.querySelector('#tableMuaBan tbody');
+          if (tbody) tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">Lỗi tải dữ liệu</td></tr>';
+        }
+      }
+
+      function renderMuaBanTable(data) {
+        const tbody = document.querySelector('#tableMuaBan tbody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        if (!data || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="8" class="text-center">Không có dữ liệu mua bán</td></tr>';
+          return;
+        }
+        data.forEach((h, i) => {
+          const tr = document.createElement('tr');
+          const startIdx = (muaBanCurrentPage - 1) * muaBanPerPage;
+          tr.innerHTML = `
+                  <td>${startIdx + i + 1}</td>
+                  <td>${h.maHopDong}</td>
+                  <td>${h.tenKH}</td>
+                  <td>${h.maCuDan}</td>
+                  <td class="fw-bold text-primary">${h.maCanHo}</td>
+                  <td><small>${h.diaChiKhachHang}</small></td>
+                  <td>${h.ngayGiaoDich}</td>
+                  <td class="admin-only">
+                    <div class="d-flex gap-1 justify-content-center">
+                      <button class="btn btn-sm btn-warning btnEditMB" data-id="${h.maHopDong}">Sửa</button>
+                      <button class="btn btn-sm btn-danger btnDeleteMB" data-id="${h.maHopDong}">Xóa</button>
+                    </div>
+                  </td>
+                `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function renderMuaBanPagination(totalPages) {
+        const container = document.getElementById('muaBanPaginationButtons');
+        const info = document.getElementById('muaBanPaginationInfo');
+        if (!container || !info) return;
+        const start = (muaBanCurrentPage - 1) * muaBanPerPage + 1;
+        const end = Math.min(muaBanCurrentPage * muaBanPerPage, muaBanTotalElements);
+        info.textContent = muaBanTotalElements > 0 ? `Đang xem ${start} - ${end} trong tổng số ${muaBanTotalElements}` : 'Không có dữ liệu';
+        renderGenericPagination(container, totalPages, muaBanCurrentPage, (p) => {
+          muaBanCurrentPage = p; loadMuaBan();
+        });
+      }
+
+      // Event Listeners cho Tìm kiếm Mua Bán
+      document.getElementById('btnSearchMuaBan').addEventListener('click', () => {
+        muaBanSearchText = document.getElementById('searchMuaBan').value.trim();
+        muaBanCurrentPage = 1;
+        loadMuaBan();
+      });
+
+      document.getElementById('btnResetMuaBan').addEventListener('click', () => {
+        document.getElementById('searchMuaBan').value = '';
+        muaBanSearchText = '';
+        muaBanCurrentPage = 1;
+        loadMuaBan();
+      });
+
+      // Sửa / Xóa Hợp đồng (Admin Only)
+      document.querySelector('#tableMuaBan').addEventListener('click', async (e) => {
+        const id = e.target.dataset.id;
+        if (e.target.classList.contains('btnDeleteMB')) {
+          if (!UIManager.isAdmin()) { alert('Bạn không có quyền thực hiện hành động này!'); return; }
+          if (!confirm(`Xóa hợp đồng "${id}"?`)) return;
+          try {
+            await ApiClient.hopdong.delete(id);
+            alert('Xóa hợp đồng thành công!');
+            await loadMuaBan();
+          } catch (err) { alert('Lỗi: ' + err.message); }
+        }
+        if (e.target.classList.contains('btnEditMB')) {
+           alert('Chức năng sửa hợp đồng đang được hoàn thiện.');
+        }
+      });
+
+      // (Removing redundant thongBao variables)
+
+      // --- Load Thông Báo ---
+      async function loadThongBao() {
+        try {
+          const pageObj = await ApiClient.thongbao.getPaged(thongBaoCurrentPage - 1, thongBaoPerPage, thongBaoSearchText);
+          thongBaoTotalElements = pageObj.totalElements;
+          renderThongBaoTable(pageObj.content);
+          renderThongBaoPagination(pageObj.totalPages);
+        } catch (e) {
+          console.error(e);
+          const tbody = document.querySelector('#tableThongBao tbody');
+          if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Lỗi tải dữ liệu</td></tr>';
+        }
+      }
+
+      function renderThongBaoTable(data) {
+        const tbody = document.querySelector('#tableThongBao tbody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        if (!data || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="text-center">Không có thông báo nào</td></tr>';
+          return;
+        }
+        data.forEach((t, i) => {
+          const tr = document.createElement('tr');
+          const startIdx = (thongBaoCurrentPage - 1) * thongBaoPerPage;
+          const thoiGian = t.thoiGian ? new Date(t.thoiGian).toLocaleString('vi-VN') : '-';
+          tr.innerHTML = `
+                <td>${startIdx + i + 1}</td>
+                <td>${t.maThongBao}</td>
+                <td class="fw-bold">${t.tieuDe || '-'}</td>
+                <td><small>${t.noiDung || '-'}</small></td>
+                <td>${thoiGian}</td>
+              `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function renderThongBaoPagination(totalPages) {
+        const container = document.getElementById('thongBaoPaginationButtons');
+        const info = document.getElementById('thongBaoPaginationInfo');
+        if (!container || !info) return;
+        const start = (thongBaoCurrentPage - 1) * thongBaoPerPage + 1;
+        const end = Math.min(thongBaoCurrentPage * thongBaoPerPage, thongBaoTotalElements);
+        info.textContent = thongBaoTotalElements > 0 ? `Đang xem ${start} - ${end} trong tổng số ${thongBaoTotalElements}` : 'Không có dữ liệu';
+        renderGenericPagination(container, totalPages, thongBaoCurrentPage, (p) => {
+          thongBaoCurrentPage = p; loadThongBao();
+        });
+      }
+
+      document.getElementById('btnSearchThongBao').addEventListener('click', () => {
+        thongBaoSearchText = document.getElementById('searchThongBao').value.trim();
+        thongBaoCurrentPage = 1;
+        loadThongBao();
+      });
+
+      document.getElementById('btnResetThongBao').addEventListener('click', () => {
+        document.getElementById('searchThongBao').value = '';
+        thongBaoSearchText = '';
+        thongBaoCurrentPage = 1;
+        loadThongBao();
+      });
+
+      // (Removing redundant phanHoi variables)
+
+      // --- Load Phản Hồi ---
+      async function loadPhanHoi() {
+        try {
+          const pageObj = await ApiClient.phanhoi.getPaged(phanHoiCurrentPage - 1, phanHoiPerPage, phanHoiSearchText);
+          phanHoiTotalElements = pageObj.totalElements;
+          renderPhanHoiTable(pageObj.content);
+          renderPhanHoiPagination(pageObj.totalPages);
+        } catch (e) {
+          console.error(e);
+          const tbody = document.querySelector('#tablePhanHoi tbody');
+          if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Lỗi tải dữ liệu</td></tr>';
+        }
+      }
+
+      function renderPhanHoiTable(data) {
+        const tbody = document.querySelector('#tablePhanHoi tbody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        if (!data || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="text-center">Không có phản hồi nào</td></tr>';
+          return;
+        }
+        data.forEach((p, i) => {
+          const tr = document.createElement('tr');
+          const startIdx = (phanHoiCurrentPage - 1) * phanHoiPerPage;
+          const thoiGian = p.thoiGian ? new Date(p.thoiGian).toLocaleString('vi-VN') : '-';
+          tr.innerHTML = `
+                <td>${startIdx + i + 1}</td>
+                <td class="fw-bold">${p.taiKhoan || '-'}</td>
+                <td>${p.phanHoi || '-'}</td>
+                <td>${thoiGian}</td>
+                <td>${p.image ? `<img src="${p.image}" style="height: 40px; border-radius: 4px;">` : '-'}</td>
+              `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function renderPhanHoiPagination(totalPages) {
+        const container = document.getElementById('phanHoiPaginationButtons');
+        const info = document.getElementById('phanHoiPaginationInfo');
+        if (!container || !info) return;
+        const start = (phanHoiCurrentPage - 1) * phanHoiPerPage + 1;
+        const end = Math.min(phanHoiCurrentPage * phanHoiPerPage, phanHoiTotalElements);
+        info.textContent = phanHoiTotalElements > 0 ? `Đang xem ${start} - ${end} trong tổng số ${phanHoiTotalElements}` : 'Không có dữ liệu';
+        renderGenericPagination(container, totalPages, phanHoiCurrentPage, (p) => {
+          phanHoiCurrentPage = p; loadPhanHoi();
+        });
+      }
+
+      document.getElementById('btnSearchPhanHoi').addEventListener('click', () => {
+        phanHoiSearchText = document.getElementById('searchPhanHoi').value.trim();
+        phanHoiCurrentPage = 1;
+        loadPhanHoi();
+      });
+
+      document.getElementById('btnResetPhanHoi').addEventListener('click', () => {
+        document.getElementById('searchPhanHoi').value = '';
+        phanHoiSearchText = '';
+        phanHoiCurrentPage = 1;
+        loadPhanHoi();
+      });
+
+      // (Removing redundant chiPhi variables)
+
+
+
+      // --- Load Tiền Điện ---
+      async function loadTienDien() {
+        try {
+          const pageObj = await ApiClient.tien.dien.getPaged(dienCurrentPage - 1, costPerPage, dienSearchText);
+          dienTotalElements = pageObj.totalElements;
+          renderTienDien(pageObj.content);
+          renderDienPagination(pageObj.totalPages);
+        } catch (e) {
+          console.error(e);
+          const tbody = document.querySelector('#tbtiendien tbody');
+          if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Lỗi tải dữ liệu</td></tr>';
+        }
+      }
+
+      function renderTienDien(data) {
+        const tbody = document.querySelector('#tbtiendien tbody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        if (!data || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="text-center">Không có dữ liệu</td></tr>';
+          return;
+        }
+        data.forEach((d, index) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${d.maCuDan || '-'}</td>
+            <td>${d.maCanHo || '-'}</td>
+            <td><small>${d.ngayThu || '-'}</small></td>
+            <td>${d.tongSoDienSuDung || 0} kWh</td>
+            <td>${(d.tongSoTienPhaiTra || 0).toLocaleString()} đ</td>
+            <td><span class="badge ${d.trangThai ? 'bg-success' : 'bg-warning'}">
+                ${d.trangThai ? 'Đã thu' : 'Chưa thu'}
+            </span></td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function renderDienPagination(totalPages) {
+        const container = document.getElementById('dienPaginationButtons');
+        const info = document.getElementById('dienPaginationInfo');
+        if (!container || !info) return;
+        const start = (dienCurrentPage - 1) * costPerPage + 1;
+        const end = Math.min(dienCurrentPage * costPerPage, dienTotalElements);
+        info.textContent = dienTotalElements > 0 ? `Đang xem ${start} - ${end} trong tổng số ${dienTotalElements}` : 'Không có dữ liệu';
+        renderGenericPagination(container, totalPages, dienCurrentPage, (p) => {
+          dienCurrentPage = p; loadTienDien();
+        });
+      }
+
+      // --- Load Tiền Nước ---
+      async function loadTienNuoc() {
+        try {
+          const pageObj = await ApiClient.tien.nuoc.getPaged(nuocCurrentPage - 1, costPerPage, nuocSearchText);
+          nuocTotalElements = pageObj.totalElements;
+          renderTienNuoc(pageObj.content);
+          renderNuocPagination(pageObj.totalPages);
+        } catch (e) {
+          console.error(e);
+          const tbody = document.querySelector('#tbtiennuoc tbody');
+          if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Lỗi tải dữ liệu</td></tr>';
+        }
+      }
+      function renderTienNuoc(data) {
+        const tbody = document.querySelector('#tbtiennuoc tbody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        if (!data || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="text-center">Không có dữ liệu</td></tr>';
+          return;
+        }
+        data.forEach(n => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+              <td>${n.maCuDan}</td>
+              <td>${n.maCanHo}</td>
+              <td><small>${n.ngayThu}</small></td>
+              <td>${n.soKhoiNuocSuDung} m³</td>
+              <td>${n.soTienNuocPhaiTra.toLocaleString()} đ</td>
+              <td><span class="badge ${n.trangThai ? 'bg-success' : 'bg-warning'}">${n.trangThai ? 'Đã thu' : 'Chưa thu'}</span></td>
+            `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function renderNuocPagination(totalPages) {
+        const container = document.getElementById('nuocPaginationButtons');
+        const info = document.getElementById('nuocPaginationInfo');
+        if (!container || !info) return;
+        const start = (nuocCurrentPage - 1) * costPerPage + 1;
+        const end = Math.min(nuocCurrentPage * costPerPage, nuocTotalElements);
+        info.textContent = nuocTotalElements > 0 ? `Đang xem ${start} - ${end} trong tổng số ${nuocTotalElements}` : 'Không có dữ liệu';
+        renderGenericPagination(container, totalPages, nuocCurrentPage, (p) => {
+          nuocCurrentPage = p; loadTienNuoc();
+        });
+      }
+
+      // --- Load Tiền Vệ Sinh ---
+      async function loadTienVeSinh() {
+        try {
+          const pageObj = await ApiClient.tien.veSinhChung.getPaged(vesinhCurrentPage - 1, costPerPage, vesinhSearchText);
+          vesinhTotalElements = pageObj.totalElements;
+          renderTienVeSinh(pageObj.content);
+          renderVeSinhPagination(pageObj.totalPages);
+        } catch (e) {
+          console.error(e);
+          const tbody = document.querySelector('#tbtienvesinh tbody');
+          if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Lỗi tải dữ liệu</td></tr>';
+        }
+      }
+      function renderTienVeSinh(data) {
+        const tbody = document.querySelector('#tbtienvesinh tbody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        if (!data || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="text-center">Không có dữ liệu</td></tr>';
+          return;
+        }
+        data.forEach(v => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+              <td>${v.maCuDan}</td>
+              <td>${v.maCanHo}</td>
+              <td><small>${v.ngayThu}</small></td>
+              <td>${v.soNguoi} người</td>
+              <td>${v.tienVeSinhChung.toLocaleString()} đ</td>
+              <td><span class="badge ${v.trangThai ? 'bg-success' : 'bg-warning'}">${v.trangThai ? 'Đã thu' : 'Chưa thu'}</span></td>
+            `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function renderVeSinhPagination(totalPages) {
+        const container = document.getElementById('vesinhPaginationButtons');
+        const info = document.getElementById('vesinhPaginationInfo');
+        if (!container || !info) return;
+        const start = (vesinhCurrentPage - 1) * costPerPage + 1;
+        const end = Math.min(vesinhCurrentPage * costPerPage, vesinhTotalElements);
+        info.textContent = vesinhTotalElements > 0 ? `Đang xem ${start} - ${end} trong tổng số ${vesinhTotalElements}` : 'Không có dữ liệu';
+        renderGenericPagination(container, totalPages, vesinhCurrentPage, (p) => {
+          vesinhCurrentPage = p; loadTienVeSinh();
+        });
+      }
+
+      // --- Load Tiền Gửi Xe ---
+      async function loadTienGuiXe() {
+        try {
+          const pageObj = await ApiClient.tien.guiXe.getPaged(guixeCurrentPage - 1, costPerPage, guixeSearchText);
+          guixeTotalElements = pageObj.totalElements;
+          renderTienGuiXe(pageObj.content);
+          renderGuiXePagination(pageObj.totalPages);
+        } catch (e) {
+          console.error(e);
+          const tbody = document.querySelector('#tbtienguixe tbody');
+          if (tbody) tbody.innerHTML = '<tr><td colspan="10" class="text-center text-danger">Lỗi tải dữ liệu</td></tr>';
+        }
+      }
+
+      function renderTienGuiXe(data) {
+        const tbody = document.querySelector('#tbtienguixe tbody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        if (!data || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="10" class="text-center">Không có dữ liệu</td></tr>';
+          return;
+        }
+        data.forEach(g => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${g.maCuDan || '-'}</td>
+            <td>${g.maCanHo || '-'}</td>
+            <td><small>${g.ngayThu || '-'}</small></td>
+            <td>${g.xeOTo || 0}</td>
+            <td>${(g.tienGuiOTo || 0).toLocaleString()} đ</td>
+            <td>${g.xeMay || 0}</td>
+            <td>${(g.tienGuiXeMay || 0).toLocaleString()} đ</td>
+            <td>${(g.xeDap || 0)}</td>
+            <td>${(g.tienGuiXeDap || 0).toLocaleString()} đ</td>
+            <td>${(g.tongTienGuiXe || 0).toLocaleString()} đ</td>
+            <td><span class="badge ${g.trangThai ? 'bg-success' : 'bg-warning'}">
+                ${g.trangThai ? 'Đã thu' : 'Chưa thu'}
+            </span></td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function renderGuiXePagination(totalPages) {
+        const container = document.getElementById('guixePaginationButtons');
+        const info = document.getElementById('guixePaginationInfo');
+        if (!container || !info) return;
+        const start = (guixeCurrentPage - 1) * costPerPage + 1;
+        const end = Math.min(guixeCurrentPage * costPerPage, guixeTotalElements);
+        info.textContent = guixeTotalElements > 0 ? `Đang xem ${start} - ${end} trong tổng số ${guixeTotalElements}` : 'Không có dữ liệu';
+        renderGenericPagination(container, totalPages, guixeCurrentPage, (p) => {
+          guixeCurrentPage = p; loadTienGuiXe();
+        });
+      }
+
+      // --- Load Tiền Duy Trì ---
+      async function loadTienPhiDuyTri() {
+        try {
+          const pageObj = await ApiClient.tien.phiDuyTri.getPaged(duytriCurrentPage - 1, costPerPage, duytriSearchText);
+          duytriTotalElements = pageObj.totalElements;
+          renderTienPhiDuyTri(pageObj.content);
+          renderDuyTriPagination(pageObj.totalPages);
+        } catch (e) {
+          console.error(e);
+          const tbody = document.querySelector('#tbtienduytri tbody');
+          if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Lỗi tải dữ liệu</td></tr>';
+        }
+      }
+      function renderTienPhiDuyTri(data) {
+        const tbody = document.querySelector('#tbtienduytri tbody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        if (!data || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="text-center">Không có dữ liệu</td></tr>';
+          return;
+        }
+        data.forEach(p => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+              <td>${p.maCuDan}</td>
+              <td>${p.maCanHo}</td>
+              <td><small>${p.ngayThu}</small></td>
+              <td>${p.soNguoi} người</td>
+              <td>${p.tienPhiDuyTri ? p.tienPhiDuyTri.toLocaleString() : (p.tienDuyTri ? p.tienDuyTri.toLocaleString() : '0')} đ</td>
+              <td><span class="badge ${p.trangThai ? 'bg-success' : 'bg-warning'}">${p.trangThai ? 'Đã thu' : 'Chưa thu'}</span></td>
+            `;
+          tbody.appendChild(tr);
+        });
+      }
+      function renderDuyTriPagination(totalPages) {
+        const container = document.getElementById('duytriPaginationButtons');
+        const info = document.getElementById('duytriPaginationInfo');
+        if (!container || !info) return;
+        const start = (duytriCurrentPage - 1) * costPerPage + 1;
+        const end = Math.min(duytriCurrentPage * costPerPage, duytriTotalElements);
+        info.textContent = duytriTotalElements > 0 ? `Đang xem ${start} - ${end} trong tổng số ${duytriTotalElements}` : 'Không có dữ liệu';
+        renderGenericPagination(container, totalPages, duytriCurrentPage, (p) => {
+          duytriCurrentPage = p; loadTienPhiDuyTri();
+        });
+      }
+
+      // --- Load Chi Phí Hoạt Động ---
+      async function loadTienChiPhiHoatDong() {
+        try {
+          const pageObj = await ApiClient.tien.chiPhiHoatDong.getPaged(hoatdongCurrentPage - 1, costPerPage, hoatdongSearchText);
+          hoatdongTotalElements = pageObj.totalElements;
+          renderTienChiPhiHoatDong(pageObj.content);
+          renderHoatDongPagination(pageObj.totalPages);
+        } catch (e) {
+          console.error(e);
+          const tbody = document.querySelector('#tbtienhoatdong tbody');
+          if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Lỗi tải dữ liệu</td></tr>';
+        }
+      }
+      function renderTienChiPhiHoatDong(data) {
+        const tbody = document.querySelector('#tbtienhoatdong tbody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        if (!data || data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" class="text-center">Không có dữ liệu</td></tr>';
+          return;
+        }
+        data.forEach(p => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+              <td>${p.maCuDan}</td>
+              <td>${p.maCanHo}</td>
+              <td><small>${p.ngayThu}</small></td>
+              <td>${p.soNguoi} người</td>
+              <td>${p.tienChiPhiHoatDong ? p.tienChiPhiHoatDong.toLocaleString() : '0'} đ</td>
+              <td><span class="badge ${p.trangThai ? 'bg-success' : 'bg-warning'}">${p.trangThai ? 'Đã thu' : 'Chưa thu'}</span></td>
+            `;
+          tbody.appendChild(tr);
+        });
+      }
+      function renderHoatDongPagination(totalPages) {
+        const container = document.getElementById('hoatdongPaginationButtons');
+        const info = document.getElementById('hoatdongPaginationInfo');
+        if (!container || !info) return;
+        const start = (hoatdongCurrentPage - 1) * costPerPage + 1;
+        const end = Math.min(hoatdongCurrentPage * costPerPage, hoatdongTotalElements);
+        info.textContent = hoatdongTotalElements > 0 ? `Đang xem ${start} - ${end} trong tổng số ${hoatdongTotalElements}` : 'Không có dữ liệu';
+        renderGenericPagination(container, totalPages, hoatdongCurrentPage, (p) => {
+          hoatdongCurrentPage = p; loadTienChiPhiHoatDong();
+        });
+      }
+      // --- Load Cư Dân (Chủ Hộ) ---
+      async function loadChuHo() {
+        try {
+          const [ch, cht] = await Promise.all([
+            ApiClient.cudan.getByVaiTro(0),
+            ApiClient.cudan.getByVaiTro(2)
+          ]);
+          allChuHo = [...ch, ...cht];
+
+          renderChuHo('tbdungdien', '');
+          renderChuHo('tbdungnuoc', '');
+          renderChuHo('tbvesinhchung', '');
+          renderChuHo('tbguixe', '');
+          renderChuHo('tbduytri', '');
+          renderChuHo('tbhoatdong', '');
+        } catch (e) {
+          console.error("Lỗi tải chủ hộ:", e);
+        }
+      }
+
+      function renderChuHo(tableId, query) {
+        const tbody = document.querySelector(`#${tableId} tbody`);
+        if (!tbody) return;
+        tbody.innerHTML = '';
+
+        const q = query.toLowerCase();
+        const filtered = allChuHo.filter(c =>
+          c.maCuDan.toLowerCase().includes(q) ||
+          (c.hoTen || c.tenCuDan || '').toLowerCase().includes(q)
+        );
+
+        if (filtered.length === 0) {
+          const cols = (tableId === 'tbdungdien') ? 3 : 4;
+          tbody.innerHTML = `<tr><td colspan="${cols}" class="text-center">Không tìm thấy</td></tr>`;
+          return;
+        }
+
+        filtered.forEach(c => {
+          const tr = document.createElement('tr');
+          const activeRels = (c.danhSachQuanHe || []).filter(qh => !qh.ngayKetThuc);
+          const canHoText = activeRels.length > 0
+            ? activeRels.map(qh => qh.maCanHo).join(', ')
+            : (c.maCanHo || '-');
+
+          const roleText = c.vaiTro === 2 ? 'Chủ Hộ Thuê' : 'Chủ Hộ';
+          const roleBadge = c.vaiTro === 2 ? 'bg-info' : 'bg-primary';
+
+          if (tableId === 'tbdungdien') {
+            tr.innerHTML = `
+              <td>${c.maCuDan}</td>
+              <td class="fw-bold">${c.hoTen || c.tenCuDan || '-'}</td>
+              <td>${canHoText}</td>
+              <td><span class="badge ${roleBadge}">${roleText}</span></td>
+            `;
+          } else {
+            tr.innerHTML = `
+              <td>${c.maCuDan}</td>
+              <td class="fw-bold">${c.hoTen || c.tenCuDan || '-'}</td>
+              <td>${canHoText}</td>
+              <td><span class="badge ${roleBadge}">${roleText}</span></td>
+            `;
+          }
+          tbody.appendChild(tr);
+        });
+      }
+
+      // --- Listeners cho Tìm kiếm Toàn bộ phí ---
+      document.querySelectorAll('.btn-search-cost').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const type = btn.dataset.type;
+          const searchInput = btn.previousElementSibling;
+          const searchText = searchInput ? searchInput.value.trim() : '';
+
+          if (type === 'dien') {
+            dienSearchText = searchText; dienCurrentPage = 1; loadTienDien();
+            renderChuHo('tbdungdien', searchText);
+          }
+          else if (type === 'nuoc') {
+            nuocSearchText = searchText; nuocCurrentPage = 1; loadTienNuoc();
+            renderChuHo('tbdungnuoc', searchText);
+          }
+          else if (type === 'vesinh') {
+            vesinhSearchText = searchText; vesinhCurrentPage = 1; loadTienVeSinh();
+            renderChuHo('tbvesinhchung', searchText);
+          }
+          else if (type === 'guixe') {
+            guixeSearchText = searchText; guixeCurrentPage = 1; loadTienGuiXe();
+            renderChuHo('tbguixe', searchText);
+          }
+          else if (type === 'duytri') {
+            duytriSearchText = searchText; duytriCurrentPage = 1; loadTienPhiDuyTri();
+            renderChuHo('tbduytri', searchText);
+          }
+          else if (type === 'hoatdong') {
+            hoatdongSearchText = searchText; hoatdongCurrentPage = 1; loadTienChiPhiHoatDong();
+            renderChuHo('tbhoatdong', searchText);
+          }
+        });
+      });
+
+      // --- Listeners cho Làm mới phí ---
+      document.querySelectorAll('.btn-reset-cost').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const type = btn.dataset.type;
+          const searchInput = btn.previousElementSibling.previousElementSibling; // input - search btn - reset btn
+          if (searchInput) searchInput.value = '';
+
+          if (type === 'dien') { dienSearchText = ''; dienCurrentPage = 1; loadTienDien(); renderChuHo('tbdungdien', ''); }
+          else if (type === 'nuoc') { nuocSearchText = ''; nuocCurrentPage = 1; loadTienNuoc(); renderChuHo('tbdungnuoc', ''); }
+          else if (type === 'vesinh') { vesinhSearchText = ''; vesinhCurrentPage = 1; loadTienVeSinh(); renderChuHo('tbvesinhchung', ''); }
+          else if (type === 'guixe') { guixeSearchText = ''; guixeCurrentPage = 1; loadTienGuiXe(); renderChuHo('tbguixe', ''); }
+          else if (type === 'duytri') { duytriSearchText = ''; duytriCurrentPage = 1; loadTienPhiDuyTri(); renderChuHo('tbduytri', ''); }
+          else if (type === 'hoatdong') { hoatdongSearchText = ''; hoatdongCurrentPage = 1; loadTienChiPhiHoatDong(); renderChuHo('tbhoatdong', ''); }
+        });
+      });
+
+
+
+      async function init() {
+        try { await loadDanhSachKhu(); } catch (e) { console.error(e); }
+        try { await loadCanHo(); } catch (e) { console.error(e); }
+        try { await loadTaiKhoan(); } catch (e) { console.error(e); }
+        try { await loadMuaBan(); } catch (e) { console.error(e); }
+        try { await loadChuHo(); } catch (e) { console.error(e); }
+        try { await loadCuDan(); } catch (e) { console.error(e); }
+        try { await loadPhuongTien(); } catch (e) { console.error(e); }
+        try { await loadThongBao(); } catch (e) { console.error(e); }
+        try { await loadPhanHoi(); } catch (e) { console.error(e); }
+        try { await loadTienDien(); } catch (e) { console.error(e); }
+        try { await loadTienNuoc(); } catch (e) { console.error(e); }
+        try { await loadTienVeSinh(); } catch (e) { console.error(e); }
+        try { await loadTienGuiXe(); } catch (e) { console.error(e); }
+        try { await loadTienPhiDuyTri(); } catch (e) { console.error(e); }
+        try { await loadTienChiPhiHoatDong(); } catch (e) { console.error(e); }
+      }
+
+      init();
+
+      window.showPage = function (id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        const targetPage = document.getElementById(id);
+        if (targetPage) targetPage.classList.add('active');
+
+        // Cập nhật Sidebar
+        document.querySelectorAll('.sidebar .nav-item').forEach(item => item.classList.remove('active'));
+        const sideItem = document.getElementById(`side-${id}`) || document.getElementById('nav-tai-khoan');
+        if (sideItem) sideItem.classList.add('active');
+
+        // Cập nhật Tiêu đề
+        const titles = {
+          'dashboard': '📊 Trang Chủ',
+          'khu-can-ho': '🏢 Khu Căn Hộ',
+          'can-ho': '🏠 Căn Hộ',
+          'cu-dan': '👥 Cư Dân',
+          'phuong-tien': '🚗 Phương Tiện',
+          'tai-khoan': '👤 Tài Khoản',
+          'mua-ban': '🤝 Mua Bán',
+          'dien': '⚡ Tiền Điện',
+          'nuoc': '💧 Tiền Nước',
+          'Tien-Ve-Sinh-Chung': '🧹 Phí Sân / Vệ Sinh',
+          'Tien-Gui-Xe': '🅿️ Tiền Gửi Xe',
+          'Chi-Phi-Duy-Tri': '🛠️ Phí Duy Trì',
+          'Hoat-Dong': '🎭 Phí Hoạt Động',
+          'thong-bao': '📢 Thông Báo',
+          'phan-hoi': '💬 Phản Hồi'
+        };
+        const headerTitle = document.getElementById('headerTitle');
+        if (headerTitle) headerTitle.textContent = titles[id] || 'Quản Lý Chung Cư';
+
+        // Tự động load dữ liệu trang tương ứng
+        if (id === 'khu-can-ho') loadDanhSachKhu();
+        else if (id === 'can-ho') loadCanHo();
+        else if (id === 'cu-dan') loadCuDan();
+        else if (id === 'phuong-tien') loadPhuongTien();
+        else if (id === 'thong-bao') loadThongBao();
+        else if (id === 'phan-hoi') loadPhanHoi();
+        else if (id === 'dien') loadTienDien();
+        else if (id === 'nuoc') loadTienNuoc();
+        else if (id === 'Tien-Ve-Sinh-Chung') loadTienVeSinh();
+        else if (id === 'Tien-Gui-Xe') loadTienGuiXe();
+        else if (id === 'Chi-Phi-Duy-Tri') loadTienPhiDuyTri();
+        else if (id === 'Hoat-Dong') loadTienChiPhiHoatDong();
+        else if (id === 'mua-ban') loadMuaBan();
+        else if (id === 'tai-khoan') loadTaiKhoan();
+      };
+
+    });
+  </script>
+  <script>
+    async function logout() {
+      try {
+        await fetch('/perform_logout', { method: 'POST' });
+        window.location.href = '/login.html';
+      } catch (error) {
+        console.error('Lỗi khi đăng xuất:', error);
+        window.location.href = '/login.html';
+      }
+    }
+  </script>
+</body>
+
+</html>
